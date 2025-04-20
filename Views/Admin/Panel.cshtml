@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h2 class="mb-4">🔐 Admin Panel</h2>
+
+<p>Welcome, @User.Identity?.Name! You are logged in as <strong>Admin</strong>.</p>
+
+<div class="mt-4">
+    <ul class="list-group">
+        <li class="list-group-item"><a asp-controller="Inventory" asp-action="Index">📦 Manage Inventory</a></li>
+        <li class="list-group-item"><a class="text-decoration-none" asp-controller="Admin" asp-action="Users">👥 View All Users</a></li>
+        <li class="list-group-item"><a asp-controller="InventoryTransaction" asp-action="Index">📊 View All Transactions</a></li>
+        <li class="list-group-item"><a asp-controller="Home" asp-action="Index">🏠 Back to Home</a></li>
+    </ul>
+</div>

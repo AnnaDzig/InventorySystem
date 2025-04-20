@@ -1,0 +1,43 @@
+﻿@model List<InventorySystem.Models.InventoryTransaction>
+
+@{
+    ViewData["Title"] = "My Inventory History";
+}
+
+<h2>My Inventory History</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Take Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+            <th>Condition</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.InventoryItem?.Name</td>
+                <td>@t.TakeDate.ToShortDateString()</td>
+                <td>@(t.ReturnDate?.ToShortDateString() ?? "Not returned")</td>
+                <td>
+                    @if (t.ReturnDate == null)
+                    {
+                        <span class="text-warning">Active</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Returned</span>
+                    }
+                </td>
+                <td>@t.Condition</td>
+                <td>@t.Message</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

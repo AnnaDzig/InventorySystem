@@ -1,0 +1,48 @@
+﻿@using System.Security.Claims
+@model List<InventorySystem.Models.InventoryTransaction>
+
+@{
+    ViewData["Title"] = "Inventory Transactions";
+}
+
+
+<h2>Inventory Transactions</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Who</th>
+            <th>Taken</th>
+            <th>Returned</th>
+            <th>Condition</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.InventoryItem?.Name</td>
+                <td>@($"{t.User?.FirstName} {t.User?.LastName}")</td>
+                <td>@t.TakeDate.ToShortDateString()</td>
+                <td>@(t.ReturnDate?.ToShortDateString() ?? "Not returned")</td>
+                <td>@t.Condition</td>
+                <td>@t.Message</td>
+                <td>
+                    @if (t.ReturnDate == null && t.UserId.ToString() == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                    {
+                        <a class="btn btn-sm btn-success" href="/InventoryTransaction/Return/@t.Id">Return</a>
+                    }
+                    else if (t.ReturnDate != null)
+                    {
+                        <span class="text-muted">Returned</span>
+                    }
+
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+

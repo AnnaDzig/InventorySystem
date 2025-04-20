@@ -1,0 +1,24 @@
+﻿@model InventorySystem.Models.InventoryTransaction
+
+@{
+    ViewData["Title"] = "Return Item";
+}
+
+<h2>Return Item: @Model.InventoryItem?.Name</h2>
+
+<form asp-action="Return" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group mb-3">
+        <label>Condition</label>
+        <input type="text" name="Condition" class="form-control" required />
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Message</label>
+        <textarea name="Message" class="form-control" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

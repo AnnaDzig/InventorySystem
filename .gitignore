@@ -1,0 +1,28 @@
+﻿# Build folders
+bin/
+obj/
+
+# User-specific files
+.vs/
+*.user
+*.suo
+*.exe
+
+
+# Logs
+*.log
+
+# Database & sensitive config
+*.db
+*.sqlite
+.env
+appsettings.*.json
+
+# Node/NPM
+node_modules/
+
+# Publish output
+wwwroot/css/site.css
+wwwroot/css/tailwind.css
+tailwind.config.js
+postcss.config.js

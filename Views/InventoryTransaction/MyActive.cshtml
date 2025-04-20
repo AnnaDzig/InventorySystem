@@ -1,0 +1,26 @@
+﻿@model List<InventorySystem.Models.InventoryTransaction>
+
+<h2>My Active Inventory</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Take Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.InventoryItem?.Name</td>
+                <td>@t.TakeDate.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-sm btn-success" href="/InventoryTransaction/Return/@t.Id">Return</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,20 @@
+﻿@model InventorySystem.Models.InventoryTransaction
+
+@{
+    ViewData["Title"] = "Take Item";
+}
+
+<h2>Take an Inventory Item</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group mb-3">
+        <label>Item</label>
+        <select class="form-control" name="InventoryItemId" asp-items="@(ViewData["Items"] as SelectList)">
+            <option value="">-- Select an item --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Take</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
