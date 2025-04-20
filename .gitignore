@@ -17,6 +17,8 @@ obj/
 *.sqlite
 .env
 appsettings.*.json
+inventory.db
+
 
 # Node/NPM
 node_modules/

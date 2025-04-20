@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using InventorySystem.Models;
 using InventorySystem.Services;
+using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,21 +12,35 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+{
+  if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+  {
+    // Windows → SQL Server
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+  }
+  else
+  {
+    // Mac/Linux → SQLite
+    options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection"));
+  }
+});
+
 
 // Cookie-based Authentication (Claims)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
+      options.LoginPath = "/Account/Login";
+      options.LogoutPath = "/Account/Logout";
     });
 
 //  Реєстрація потрібних сервісів
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddTransient<EmailService>(); 
+builder.Services.AddTransient<EmailService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -33,12 +48,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+  app.UseDeveloperExceptionPage();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+  app.UseExceptionHandler("/Home/Error");
+  app.UseHsts();
 }
 
 //app.UseHttpsRedirection();
