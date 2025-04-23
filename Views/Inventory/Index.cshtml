@@ -1,84 +1,90 @@
 ﻿@model InventorySystem.ViewModels.InventoryFilterViewModel
 
 @{
-    ViewData["Title"] = "Inventory";
+  ViewData["Title"] = "Inventory";
 }
 
 <h2>Inventory</h2>
 
 <form method="get" class="row mb-4">
-    <div class="col-md-4">
-        <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Search by name or description" />
-    </div>
-    <div class="col-md-3">
-        <select name="warehouseId" class="form-select">
-            <option value="">-- All Warehouses --</option>
-            @foreach (var wh in Model.Warehouses!)
-            {
-                var selected = Model.WarehouseId?.ToString() == wh.Value ? "selected" : "";
-                <option value="@wh.Value" selected="@selected">@wh.Text</option>
-            }
-        </select>
-    </div>
-    <div class="col-md-3">
-        <button type="submit" class="btn btn-primary">Filter</button>
-        <a href="/Inventory/Index" class="btn btn-secondary">Reset</a>
-    </div>
+  <div class="col-md-4">
+    <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control"
+      placeholder="Search by name or description" />
+  </div>
+  <div class="col-md-3">
+    <select name="warehouseId" class="form-select">
+      <option value="">-- All Warehouses --</option>
+      @foreach (var wh in Model.Warehouses!)
+      {
+        var selected = Model.WarehouseId?.ToString() == wh.Value ? "selected" : "";
+        <option value="@wh.Value" selected="@selected">@wh.Text</option>
+      }
+    </select>
+  </div>
+  <div class="col-md-3">
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="/Inventory/Index" class="btn btn-secondary">Reset</a>
+  </div>
 </form>
 
 @if (User.IsInRole("Admin"))
 {
-    <div class="mb-3">
-        <a class="btn btn-success" asp-action="Create">➕ Add New Item</a>
-    </div>
+  <div class="mb-3">
+    <a class="btn btn-success" asp-action="Create">➕ Add New Item</a>
+  </div>
 }
 
 <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort" asp-route-searchTerm="@Model.SearchTerm" asp-route-warehouseId="@Model.WarehouseId">Name</a>
-            </th>
-            <th>Description</th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewBag.QuantitySort" asp-route-searchTerm="@Model.SearchTerm" asp-route-warehouseId="@Model.WarehouseId">Quantity</a>
-            </th>
-            <th>Warehouse</th>
+  <thead>
+    <tr>
+      <th>
+        <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort" asp-route-searchTerm="@Model.SearchTerm"
+          asp-route-warehouseId="@Model.WarehouseId">Name</a>
+      </th>
+      <th>Description</th>
+      <th>
+        <a asp-action="Index" asp-route-sortOrder="@ViewBag.QuantitySort" asp-route-searchTerm="@Model.SearchTerm"
+          asp-route-warehouseId="@Model.WarehouseId">Quantity</a>
+      </th>
+      <th>Warehouse</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model.Items!)
+    {
+      <tr class="@(item.IsActive ? "" : "text-muted")">
+        <td>
+          <a asp-controller="InventoryTransaction" asp-action="MyActive" asp-route-itemId="@item.Id">
+            @item.Name
+          </a>
+        </td>
+        <td>@item.Description</td>
+        <td>@item.Quantity</td>
+        <td>@item.Warehouse?.Name</td>
+        <td>
+          <a class="btn btn-sm btn-info" href="/Inventory/Details/@item.Id">Details</a>
 
-            @if (User.IsInRole("Admin"))
+          @if (User.IsInRole("Admin"))
+          {
+            <a class="btn btn-sm btn-warning" href="/Inventory/Edit/@item.Id">Edit</a>
+            <a class="btn btn-sm btn-danger" href="/Inventory/Delete/@item.Id">Delete</a>
+          }
+          else
+          {
+            @if (item.IsActive)
             {
-                <th>Actions</th>
+              <form method="post" class="d-inline" asp-controller="InventoryTransaction" asp-action="Create"
+                asp-route-InventoryItemId="@item.Id">@Html.AntiForgeryToken()<button type="submit"
+                  class="btn btn-sm btn-primary">Take</button> </form>
             }
             else
             {
-                <th>Details</th>
+              <span class="btn btn-sm btn-secondary disabled">Unavailable</span>
             }
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Items!)
-        {
-            <tr>
-                <td>
-                    <a asp-controller="InventoryTransaction"
-                       asp-action="MyActive"
-                       asp-route-itemId="@item.Id">
-                        @item.Name
-                    </a>
-                </td>
-                <td>@item.Description</td>
-                <td>@item.Quantity</td>
-                <td>@item.Warehouse?.Name</td>
-                <td>
-                    <a class="btn btn-sm btn-info" href="/Inventory/Details/@item.Id">Details</a>
-
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a class="btn btn-sm btn-warning" href="/Inventory/Edit/@item.Id">Edit</a>
-                        <a class="btn btn-sm btn-danger" href="/Inventory/Delete/@item.Id">Delete</a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
+          }
+        </td>
+      </tr>
+    }
+  </tbody>
 </table>
